@@ -1,4 +1,4 @@
-# carp_debug_flutter
+# CARP Debug
 
 An in-app **debug toolkit** for CARP Flutter apps (Android + iOS). It adds a
 draggable, always-on-top floating button that opens a self-contained debug menu
