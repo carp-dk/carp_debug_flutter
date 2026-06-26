@@ -1,0 +1,51 @@
+name: carp_debug_flutter
+description: >-
+  An in-app debugging toolkit for CARP ecosystem apps. Provides a floating,
+  button that opens a debug menu (independent of the host app's widget tree)
+  for switching the authentication/app servers, overriding launch arguments
+  (--dart-define) at runtime, and inspecting / editing / deleting shared
+  preferences and the local (sembast) database.
+version: 0.1.0
+homepage: https://github.com/cph-cachet/carp_debug_flutter
+repository: https://github.com/cph-cachet/carp_debug_flutter
+
+environment:
+  sdk: ^3.12.2
+  flutter: ">=3.16.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  # Used by the platform-channel layer to expose this plugin's native
+  # implementations (device info, Android relaunch) to Dart.
+  plugin_platform_interface: ^2.0.2
+
+  # Backing store for the built-in "Shared Preferences" inspector and for
+  # persisting the runtime launch-argument overrides managed by [DebugEnv].
+  shared_preferences: ^2.5.5
+
+  # Backing store for the built-in "Database" inspector. CARP apps persist
+  # their local data in a sembast NoSQL database, so the toolkit ships with a
+  # first-class sembast adapter.
+  sembast: ^3.8.9
+
+  # Used for styling text in the debug menu.
+  google_fonts: ^8.1.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^6.0.0
+  pigeon: ^27.1.0
+
+# The following section is specific to Flutter packages.
+flutter:
+  # This section identifies this Flutter project as a plugin project.
+  plugin:
+    platforms:
+      android:
+        package: dk.carp.carp_debug_flutter
+        pluginClass: CarpDebugFlutterPlugin
+      ios:
+        pluginClass: CarpDebugFlutterPlugin
