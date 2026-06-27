@@ -18,10 +18,6 @@ dependencies:
   flutter:
     sdk: flutter
 
-  # Directly imported by the Pigeon-generated platform-channel glue
-  # (lib/src/platform/messages.g.dart). `meta` is SDK-pinned by Flutter, so the
-  # wide lower bound resolves to whatever the host app's SDK ships and won't
-  # conflict with apps that constrain `meta` themselves.
   meta: ^1.9.1
 
   # Used by the platform-channel layer to expose this plugin's native
