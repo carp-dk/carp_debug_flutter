@@ -1,11 +1,7 @@
 name: carp_debug_flutter
 description: >-
-  An in-app debugging toolkit for CARP ecosystem apps. Provides a floating,
-  button that opens a debug menu (independent of the host app's widget tree)
-  for switching the authentication/app servers, overriding launch arguments
-  (--dart-define) at runtime, and inspecting / editing / deleting shared
-  preferences and the local (sembast) database.
-version: 0.1.1
+  An in-app debugging toolkit for CARP ecosystem apps and other Flutter apps.
+version: 0.1.2
 homepage: https://github.com/carp-dk/carp_debug_flutter
 repository: https://github.com/carp-dk/carp_debug_flutter
 issue_tracker: https://github.com/carp-dk/carp_debug_flutter/issues

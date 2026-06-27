@@ -1,3 +1,9 @@
+
+## 0.1.2
+
+* Update pub.dev description
+* Add CI/CD and auto-release
+
 ## 0.1.1
 
 * Fix debug menu freezing when empty fields are modified

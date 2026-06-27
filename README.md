@@ -3,9 +3,9 @@
 [![CI](https://github.com/carp-dk/carp_debug_flutter/actions/workflows/ci.yml/badge.svg)](https://github.com/carp-dk/carp_debug_flutter/actions/workflows/ci.yml)
 [![pub package](https://img.shields.io/pub/v/carp_debug_flutter.svg)](https://pub.dev/packages/carp_debug_flutter)
 
-An in-app **debug toolkit**. Adds a floating button with a
-debug menu which is independent of the host app's widget tree.
-This toolkit was designed to be used in CARP Flutter apps (Android + iOS)
+An in-app **debug toolkit**. Adds a button with a debug menu 
+which is independent of the host app's widget tree. This toolkit 
+was designed to be used in CARP Flutter apps (Android + iOS)
 but can be used in any Flutter app. See the [CARP Debug Flutter example](https://github.com/carp-dk/carp_debug_flutter/tree/main/example) and [CARP Debug Docs](https://docs.carp.dk)
 
 ## Features
