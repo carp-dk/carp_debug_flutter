@@ -23,7 +23,10 @@ void main() {
         config: DebugToolkitConfig(
           captureLogs: false,
           envEntries: const [
-            EnvEntry(key: 'server-host', label: 'App server host'), // empty text
+            EnvEntry(
+              key: 'server-host',
+              label: 'App server host',
+            ), // empty text
           ],
         ),
         child: const MaterialApp(home: Scaffold(body: Text('host'))),

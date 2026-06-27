@@ -26,7 +26,6 @@ import 'package:pigeon/pigeon.dart';
     dartPackageName: 'carp_debug_flutter',
   ),
 )
-
 /// Read-only snapshot of device and application metadata, collected natively.
 ///
 /// Surfaced by the "Device & App" tool so a tester can confirm exactly which

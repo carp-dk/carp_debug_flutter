@@ -16,11 +16,19 @@ topics:
 
 environment:
   sdk: ^3.12.2
-  flutter: ">=3.16.0"
+  # 3.44.2 is the first Flutter release that ships Dart 3.12.2 (the `sdk:` floor
+  # above), so it is the true minimum — matched by the CI build/test matrix.
+  flutter: ">=3.44.2"
 
 dependencies:
   flutter:
     sdk: flutter
+
+  # Directly imported by the Pigeon-generated platform-channel glue
+  # (lib/src/platform/messages.g.dart). `meta` is SDK-pinned by Flutter, so the
+  # wide lower bound resolves to whatever the host app's SDK ships and won't
+  # conflict with apps that constrain `meta` themselves.
+  meta: ^1.9.1
 
   # Used by the platform-channel layer to expose this plugin's native
   # implementations (device info, Android relaunch) to Dart.

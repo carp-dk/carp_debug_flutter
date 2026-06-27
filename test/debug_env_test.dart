@@ -21,16 +21,24 @@ void main() {
     expect(DebugEnv().hasOverride('x'), isFalse);
   });
 
-  test('registered entry fallback is used over the call-site fallback', () async {
-    await init();
-    DebugEnv().register(const EnvEntry(key: 'x', label: 'X', fallback: 'entry'));
-    expect(DebugEnv().string('x', fallback: 'call'), 'entry');
-  });
+  test(
+    'registered entry fallback is used over the call-site fallback',
+    () async {
+      await init();
+      DebugEnv().register(
+        const EnvEntry(key: 'x', label: 'X', fallback: 'entry'),
+      );
+      expect(DebugEnv().string('x', fallback: 'call'), 'entry');
+    },
+  );
 
   test('override takes precedence and persists', () async {
     await init();
     await DebugEnv().setOverride('deployment-mode', 'test');
-    expect(DebugEnv().string('deployment-mode', fallback: 'production'), 'test');
+    expect(
+      DebugEnv().string('deployment-mode', fallback: 'production'),
+      'test',
+    );
     expect(DebugEnv().hasOverride('deployment-mode'), isTrue);
     expect(DebugEnv().overrideOf('deployment-mode'), 'test');
   });
@@ -45,16 +53,19 @@ void main() {
     expect(DebugEnv().string('server-host'), 'dev.example.org');
   });
 
-  test('clearOverride reverts to default, clearAll clears everything', () async {
-    await init();
-    await DebugEnv().setOverride('a', '1');
-    await DebugEnv().setOverride('b', '2');
-    await DebugEnv().clearOverride('a');
-    expect(DebugEnv().hasOverride('a'), isFalse);
-    expect(DebugEnv().hasOverride('b'), isTrue);
-    await DebugEnv().clearAll();
-    expect(DebugEnv().hasOverride('b'), isFalse);
-  });
+  test(
+    'clearOverride reverts to default, clearAll clears everything',
+    () async {
+      await init();
+      await DebugEnv().setOverride('a', '1');
+      await DebugEnv().setOverride('b', '2');
+      await DebugEnv().clearOverride('a');
+      expect(DebugEnv().hasOverride('a'), isFalse);
+      expect(DebugEnv().hasOverride('b'), isTrue);
+      await DebugEnv().clearAll();
+      expect(DebugEnv().hasOverride('b'), isFalse);
+    },
+  );
 
   test('boolean and integer parsing', () async {
     await init();
