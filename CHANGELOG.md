@@ -1,4 +1,8 @@
 
+## 0.1.3
+
+* Clean up docs
+
 ## 0.1.2
 
 * Update pub.dev description
