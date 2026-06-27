@@ -4,8 +4,8 @@
 /// button that opens a self-contained debug menu. The menu is independent of
 /// the host app's widget tree, so it keeps working even when a screen crashes.
 ///
-/// Built-in tools let you:
-///  * switch the authentication / app server and override any launch argument
+/// Included tools:
+///  * switch the deployment server and override any launch argument
 ///    (`--dart-define`) at runtime — see [DebugEnv] and [EnvEntry];
 ///  * inspect, edit and delete shared-preferences / user-session data — see
 ///    [KeyValueStore];

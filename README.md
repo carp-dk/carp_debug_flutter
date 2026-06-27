@@ -1,28 +1,24 @@
 # CARP Debug
 
-An in-app **debug toolkit** for CARP Flutter apps (Android + iOS). It adds a
-draggable, always-on-top floating button that opens a self-contained debug menu
-— independent of the host app's widget tree, so it keeps working even when a
-screen crashes.
-
-Inspired by [framna-dk/spices](https://github.com/framna-dk/spices) (Flutter
-overlay) and [DebugSwift](https://github.com/DebugSwift/DebugSwift) (native
-toolkit).
+An in-app **debug toolkit**. Adds a floating button with a
+debug menu which is independent of the host app's widget tree.
+This toolkit was designed to be used in CARP Flutter apps (Android + iOS)
+but can be used in any Flutter app. See the [CARP Debug Flutter example](https://github.com/cph-cachet/carp_debug_flutter/tree/main/example) and [CARP Debug Docs](https://docs.carp.dk)
 
 ## Features
 
 | Tool | What it does |
 |------|--------------|
-| **Environment & Servers** | Switch the authentication / app server and override any launch argument (`--dart-define`) at runtime, then **Apply** (live reconfigure) or **Restart**. |
-| **Shared Preferences** | Inspect, search, edit, add and delete any key in a `SharedPreferences`-backed store (the CARP user/session data). |
-| **Database** | Browse the local **sembast** database: stores, records (pretty-printed JSON), delete records / clear stores. |
-| **Device & App** | Native device + app metadata (model, OS, version, build) plus screen metrics. |
-| **Logs & Errors** | Captured `debugPrint` output, framework errors and uncaught async errors — visible even after a crash. |
+| **Environment & Servers** | Switch the deployment server and override any launch argument (`--dart-define`) at runtime, then **Apply** (live reconfigure) or **Restart**. |
+| **Shared Preferences** | Inspect, search, edit, add and delete any key in a `SharedPreferences` store (the CARP user/session data). |
+| **Database** | Browse the local sembast database: stores, records (pretty-printed JSON), delete records / clear stores. |
+| **Device & App** | Device + app metadata (model, OS, version, build) plus screen metrics. |
+| **Logs & Errors** | Captured `debugPrint` output, framework errors and uncaught async errors. |
 
 Everything is extensible: register your own screens via `DebugTool` and add
 extra `KeyValueStore` / `DebugDatabase` data sources.
 
-## How it stays independent of the app
+-----
 
 `CarpDebugToolkit` wraps the **whole** app in a root `Stack` and renders its UI
 in its own scope (`MediaQuery`, `Theme`, `Localizations`, `ScaffoldMessenger`
@@ -30,11 +26,9 @@ and a dedicated `Navigator`). Because the overlay sits *above* the host
 `MaterialApp` and never uses the host's router, a crashing screen or broken
 navigation does not remove the button or the menu.
 
-> Note: a *synchronous* infinite loop on the UI isolate blocks all Dart
-> rendering (the toolkit included) — no Flutter overlay can survive that. The
-> toolkit is resilient to crashes, exceptions and broken navigation; for a
-> truly wedged isolate use the native **Restart** action (Android relaunches
-> the process; iOS performs an in-process Phoenix restart).
+> Note that however, a *synchronous* infinite loop on the UI isolate blocks all Dart
+> rendering (the toolkit included). The toolkit can handle crashes, exceptions 
+> and broken navigation.
 
 ## Runtime launch-argument overrides (`DebugEnv`)
 
@@ -92,10 +86,34 @@ Future<void> main() async {
 }
 ```
 
-See [`example/`](example/) for a complete, runnable demo with real
+See [`example/`](example/) for a complete, runnable demo with
 `SharedPreferences` + sembast data and a custom server field.
 
+## Production builds
+
+It is good practice to not ship the toolkit to end users. 
+To keep it out of production archives:
+
+1. Install as **`dev_dependencies`**
+2. Reference it only from `kDebugMode`-gated code so Dart tree-shaking
+   removes it; production code reads launch arguments through an app-local
+   hook (`String? Function(String)? debugLaunchOverride`) rather than importing
+   the package.
+
+```dart
+// main.dart — folds to `runApp(app)` in release; the wrapper (and the whole
+// package) is tree-shaken away, and the dev-dependency native is excluded.
+if (kDebugMode) await debug.initializeDebugTools();
+runApp(kDebugMode ? debug.wrapWithDebugToolkit(app, db) : app);
+```
+
+On **Android** the plugin is fully excluded from the release archive
+(absent from the release `GeneratedPluginRegistrant`). On **iOS** the Dart is
+excluded; the small native stub is still linked but inert (Dart never calls it)
+due to [flutter#163874](https://github.com/flutter/flutter/issues/163874).
+
 ## Custom tools
+You can add your own custom tools by implementing the `DebugTool` interface.
 
 ```dart
 class MyTool implements DebugTool {
@@ -108,16 +126,6 @@ class MyTool implements DebugTool {
 }
 // DebugToolkitConfig(extraTools: [MyTool()])
 ```
-
-## Platform notes
-
-- **iOS** uses **CocoaPods** (no Swift Package Manager manifest). This is
-  intentional: the repository folder name (`carp_debug_flutter`) differs from
-  the Dart package name (`carp_debug_flutter`), which breaks SPM's local-path
-  identity check. CocoaPods is unaffected. Minimum iOS **15.0**.
-- **Android** `minSdk 24`. Native code is type-safe via **Pigeon**
-  (`pigeons/messages.dart`; regenerate with
-  `dart run pigeon --input pigeons/messages.dart`).
 
 ## License
 

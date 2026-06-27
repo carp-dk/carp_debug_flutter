@@ -7,7 +7,7 @@ import 'package:flutter/material.dart';
 /// app's own theming. A dark palette with a high-visibility accent is used so
 /// the overlay never blends into the app being debugged.
 abstract final class DebugTheme {
-  /// Accent / brand colour used for the floating button and primary actions.
+  /// Accent colour used for the floating button and primary actions.
   static const Color accent = Color(0xFF00C2A8);
 
   /// Background colour of debug surfaces.

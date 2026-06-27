@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
 import '../../config/debug_env.dart';
 import '../../config/env_entry.dart';
+import 'env_text_dialog.dart';
 
 /// A single editable launch-argument row in the Environment tool.
 ///
@@ -116,38 +116,11 @@ class EnvEntryTile extends StatelessWidget {
   }
 
   Future<void> _editText(BuildContext context, String current) async {
-    final controller = TextEditingController(text: current);
-    final result = await showDialog<String>(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: Text(entry.label),
-        content: TextField(
-          controller: controller,
-          autofocus: true,
-          keyboardType: entry.type == EnvValueType.integer
-              ? TextInputType.number
-              : TextInputType.text,
-          inputFormatters: entry.type == EnvValueType.integer
-              ? [FilteringTextInputFormatter.allow(RegExp(r'[\d-]'))]
-              : null,
-          decoration: InputDecoration(
-            labelText: entry.key,
-            helperText: 'Default: ${entry.fallback}',
-          ),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(),
-            child: const Text('Cancel'),
-          ),
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(controller.text),
-            child: const Text('Save'),
-          ),
-        ],
-      ),
+    final result = await showEnvTextEditor(
+      context,
+      entry: entry,
+      current: current,
     );
-    controller.dispose();
     if (result == null) return;
     // Reject a non-integer value rather than persisting something the app
     // cannot parse back.

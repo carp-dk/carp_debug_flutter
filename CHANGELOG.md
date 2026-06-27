@@ -1,3 +1,12 @@
+## 0.1.1
+
+* Fix debug menu freezing when empty fields are modified
+* Fix debug logger crashing
+* Fix logs color scheme
+* Fix iOS SPM support
+* Add documentations in docs.carp.dk
+* Exclude toolkit from production builds (it is now a `dev_dependency`)
+
 ## 0.1.0
 
 * Draggable floating button opening a self-contained debug menu, rendered in its

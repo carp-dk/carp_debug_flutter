@@ -5,9 +5,10 @@ description: >-
   for switching the authentication/app servers, overriding launch arguments
   (--dart-define) at runtime, and inspecting / editing / deleting shared
   preferences and the local (sembast) database.
-version: 0.1.0
+version: 0.1.1
 homepage: https://github.com/cph-cachet/carp_debug_flutter
 repository: https://github.com/cph-cachet/carp_debug_flutter
+documentation: https://docs.carp.dk/
 
 environment:
   sdk: ^3.12.2
@@ -29,9 +30,6 @@ dependencies:
   # their local data in a sembast NoSQL database, so the toolkit ships with a
   # first-class sembast adapter.
   sembast: ^3.8.9
-
-  # Used for styling text in the debug menu.
-  google_fonts: ^8.1.0
 
 dev_dependencies:
   flutter_test:

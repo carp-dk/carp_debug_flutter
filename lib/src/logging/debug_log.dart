@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/foundation.dart';
 
 /// Severity of a captured [DebugLogEntry].
@@ -27,7 +29,7 @@ class DebugLogEntry {
   /// Severity of the entry.
   final DebugLogLevel level;
 
-  /// The log message.
+  /// The log message (ANSI colour codes already stripped).
   final String message;
 
   /// Optional stack trace (for errors).
@@ -39,16 +41,26 @@ class DebugLogEntry {
 /// — even after a screen has crashed.
 ///
 /// Call [attach] once during app start to begin capturing. Capture is
-/// non-destructive: the previously installed handlers are always invoked, so
-/// normal console logging and crash reporting keep working.
+/// non-destructive: the previously installed handlers are always invoked.
+///
+/// Listener notifications are **coalesced** to one per microtask so a burst of
+/// log lines cannot saturate the UI thread (which previously froze/crashed the
+/// app), and the buffer is trimmed in amortized batches.
 class DebugLog extends ChangeNotifier {
   DebugLog._();
 
   /// The shared singleton instance.
   static final DebugLog instance = DebugLog._();
 
+  // Matches ANSI/VT100 escape sequences such as `\x1B[32m` used by CAMS logging.
+  static final RegExp _ansi = RegExp(r'\x1B\[[0-9;]*[A-Za-z]');
+  static final RegExp _camsLevel = RegExp(
+    r'\[CAMS (DEBUG|INFO|WARNING|ERROR)\]',
+  );
+
   final List<DebugLogEntry> _entries = [];
   bool _attached = false;
+  bool _notifyScheduled = false;
 
   /// Maximum number of entries retained; oldest are dropped past this.
   int maxEntries = 1000;
@@ -57,24 +69,57 @@ class DebugLog extends ChangeNotifier {
   List<DebugLogEntry> get entries => List.unmodifiable(_entries);
 
   /// Records a log [message] at [level].
+  ///
+  /// ANSI colour codes are stripped, and a leading `[CAMS <LEVEL>]` marker (if
+  /// present) overrides [level] so CAMS output is coloured correctly.
   void log(
     String message, {
     DebugLogLevel level = DebugLogLevel.debug,
     StackTrace? stackTrace,
   }) {
+    final clean = message.replaceAll(_ansi, '');
     _entries.add(
-      DebugLogEntry(DateTime.now(), level, message, stackTrace?.toString()),
+      DebugLogEntry(
+        DateTime.now(),
+        _levelFor(clean, level),
+        clean,
+        stackTrace?.toString(),
+      ),
     );
-    if (_entries.length > maxEntries) {
+    // Trim in batches so a fast burst doesn't repeatedly shift the whole list.
+    if (_entries.length > maxEntries + 256) {
       _entries.removeRange(0, _entries.length - maxEntries);
     }
-    notifyListeners();
+    _scheduleNotify();
   }
 
   /// Clears all captured entries.
   void clear() {
     _entries.clear();
     notifyListeners();
+  }
+
+  DebugLogLevel _levelFor(String clean, DebugLogLevel fallback) {
+    final match = _camsLevel.firstMatch(clean);
+    return switch (match?.group(1)) {
+      'ERROR' => DebugLogLevel.error,
+      'WARNING' => DebugLogLevel.warning,
+      'INFO' => DebugLogLevel.info,
+      'DEBUG' => DebugLogLevel.debug,
+      _ => fallback,
+    };
+  }
+
+  /// Coalesces notifications: at most one [notifyListeners] per microtask, so a
+  /// synchronous burst of log lines triggers a single rebuild, and the call
+  /// never runs synchronously inside a widget build.
+  void _scheduleNotify() {
+    if (_notifyScheduled) return;
+    _notifyScheduled = true;
+    scheduleMicrotask(() {
+      _notifyScheduled = false;
+      notifyListeners();
+    });
   }
 
   /// Installs capture hooks for `debugPrint`, [FlutterError.onError] and
