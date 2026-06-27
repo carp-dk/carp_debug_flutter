@@ -12,8 +12,6 @@ topics:
 
 environment:
   sdk: ^3.12.2
-  # 3.44.2 is the first Flutter release that ships Dart 3.12.2 (the `sdk:` floor
-  # above), so it is the true minimum — matched by the CI build/test matrix.
   flutter: ">=3.44.2"
 
 dependencies:
