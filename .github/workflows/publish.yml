@@ -63,4 +63,4 @@ jobs:
     # SHA-pinned reusable workflow (this is the only job with publish rights, so
     # it is the highest-value pin). It installs the Flutter SDK (needed to
     # resolve `sdk: flutter`) and runs `dart pub publish` against the OIDC token.
-    uses: dart-lang/setup-dart/.github/workflows/publish.yml@65eb853c7ba17dde3be364c3d2858773e7144260 # v1.7.2
+    uses: dart-lang/setup-dart/.github/workflows/publish.yml@7654d458321ee25acccccfdb86cd48bd95768ff1 # v1.8.0
